@@ -124,7 +124,7 @@ export async function findSingleton(list: InitialisedSingleton, context: Keyston
   // await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Apply access control
-  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+  const filter = await accessControlledFilter(list, context, {}, accessFilters);
 
   return runWithPrisma(context, list, model => model.findFirst({ where: filter }));
 }

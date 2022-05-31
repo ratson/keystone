@@ -371,14 +371,7 @@ type Query {
   ): [Link!]
   link(where: LinkWhereUniqueInput!): Link
   linksCount(where: LinkWhereInput! = {}): Int
-  publishers(
-    where: PublisherWhereInput! = {}
-    orderBy: [PublisherOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Publisher!]
-  publisher(where: PublisherWhereUniqueInput!): Publisher
-  publishersCount(where: PublisherWhereInput! = {}): Int
+  publisher: Publisher
   keystone: KeystoneMeta!
 }
 

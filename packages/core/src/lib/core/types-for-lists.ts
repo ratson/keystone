@@ -97,7 +97,9 @@ export type InitialisedList = {
   };
 };
 
-export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists(
+  config: KeystoneConfig
+): Record<string, InitialisedListOrSingleton> {
   const listsConfig = config.lists;
   const { provider } = config.db;
   const listInfos: Record<string, ListGraphQLTypes> = {};
@@ -114,6 +116,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     }
   > = {};
 
+  // In this iterating thorugh the list configs we set the `isEnabled` record for what graphql properties are enabled
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const omit = listConfig.graphql?.omit;
     if (!omit) {
@@ -171,6 +174,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     }
   }
 
+  // In this map we set the types for graphql to use for this list
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const names = getGqlNames({
       listKey,
@@ -502,6 +506,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       ...listInfos[listKey],
       ...listsWithResolvedDBFields[listKey],
       hooks: list.hooks || {},
+      kind: listsConfig[listKey].kind,
       cacheHint: (() => {
         const cacheHint = listsConfig[listKey].graphql?.cacheHint;
         if (cacheHint === undefined) {

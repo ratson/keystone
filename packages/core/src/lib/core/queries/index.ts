@@ -7,12 +7,18 @@ export function getQueriesForList(list: InitialisedListOrSingleton) {
   if (!list.graphql.isEnabled.query) return {};
   const names = getGqlNames(list);
 
-  const findSingleton = graphql.field({
-    type: list.types.output,
-    async resolve(_rootVal, args, context) {
-      return queries.findSingleton(list, context);
-    },
-  });
+  if (list.kind === 'singleton') {
+    const findSingleton = graphql.field({
+      type: list.types.output,
+      async resolve(_rootVal, args, context) {
+        return queries.findSingleton(list, context);
+      },
+    });
+
+    return {
+      [names.itemQueryName]: findSingleton,
+    };
+  }
 
   if (list.kind === 'list') {
     const findOne = graphql.field({
@@ -38,8 +44,6 @@ export function getQueriesForList(list: InitialisedListOrSingleton) {
         return queries.count(args, list, context, info);
       },
     });
-
-    console.log(names);
 
     return {
       [names.listQueryName]: findMany,
