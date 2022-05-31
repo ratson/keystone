@@ -1,6 +1,6 @@
 import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../types';
 import { ResolvedDBField, ListsWithResolvedRelations } from './resolve-relationships';
-import { InitialisedList } from './types-for-lists';
+import { InitialisedListOrSingleton } from './types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
 function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
@@ -189,7 +189,7 @@ function assertDbFieldIsValidForIdField(
 }
 
 export function printPrismaSchema(
-  lists: Record<string, InitialisedList>,
+  lists: Record<string, InitialisedListOrSingleton>,
   provider: DatabaseProvider,
   prismaPreviewFeatures: readonly string[] | undefined
 ) {

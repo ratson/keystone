@@ -6,16 +6,34 @@ import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
 
-export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
+export type ListSchemaConfig = Record<
+  string,
+  ListConfig<any, BaseFields<BaseListTypeInfo>> | SingletonConfig<any, BaseFields<BaseListTypeInfo>>
+>;
 
 export type IdFieldConfig = {
   kind: 'cuid' | 'uuid' | 'autoincrement';
+};
+
+export type SingletonConfig<
+  ListTypeInfo extends BaseListTypeInfo,
+  Fields extends BaseFields<ListTypeInfo>
+> = {
+  kind: 'singleton';
+  fields: Fields;
+  access?: ListAccessControl<ListTypeInfo>;
+  ui?: ListAdminUIConfig<ListTypeInfo, Fields>;
+  hooks?: ListHooks<ListTypeInfo>;
+  graphql?: ListGraphQLConfig;
+  db?: ListDBConfig;
+  description?: string;
 };
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
   Fields extends BaseFields<ListTypeInfo>
 > = {
+  kind: 'list';
   /*
       A note on defaults: several options default based on the listKey, including label, path,
       singular, plural, itemQueryName and listQueryName. All these options default independently, so

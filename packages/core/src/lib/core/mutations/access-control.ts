@@ -115,6 +115,7 @@ export async function getAccessControlledItemForDelete(
 }
 
 export async function getAccessControlledItemForUpdate(
+  // TODO should this include singletons?
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,

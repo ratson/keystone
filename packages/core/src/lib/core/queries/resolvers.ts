@@ -10,7 +10,7 @@ import {
   InputFilter,
 } from '../where-inputs';
 import { limitsExceededError, userInputError } from '../graphql-errors';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedList, InitialisedSingleton } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
 
@@ -99,6 +99,29 @@ export async function findOne(
   // Check filter access
   const fieldKey = Object.keys(args.where)[0];
   await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
+
+  // Apply access control
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+
+  return runWithPrisma(context, list, model => model.findFirst({ where: filter }));
+}
+
+export async function findSingleton(list: InitialisedSingleton, context: KeystoneContext) {
+  // Check operation permission to pass into single operation
+  const operationAccess = await getOperationAccess(list, context, 'query');
+  if (!operationAccess) {
+    return null;
+  }
+
+  const accessFilters = await getAccessFilters(list, context, 'query');
+  if (accessFilters === false) {
+    return null;
+  }
+
+  // Check filter access
+  // const fieldKey = Object.keys(args.where)[0];
+  // TODO - make 'filter' not be available on singleton lists
+  // await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
 
   // Apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);

@@ -42,8 +42,37 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
   };
 };
 
+export type InitialisedSingleton = {
+  fields: Record<string, InitialisedField>;
+  kind: 'singleton';
+  /** This will include the opposites to one-sided relationships */
+  resolvedDbFields: Record<string, ResolvedDBField>;
+  types: GraphQLTypesForList;
+  access: ResolvedListAccessControl;
+  hooks: ListHooks<BaseListTypeInfo>;
+  adminUILabels: { label: string; singular: string; path: string };
+  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
+  maxResults: 1;
+  listKey: string;
+  lists: Record<string, InitialisedListOrSingleton>;
+  dbMap: string | undefined;
+  graphql: {
+    isEnabled: {
+      type: boolean;
+      query: boolean;
+
+      create: boolean;
+      update: boolean;
+      delete: false;
+    };
+  };
+};
+
+export type InitialisedListOrSingleton = InitialisedList | InitialisedSingleton;
+
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
+  kind: 'list';
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
   pluralGraphQLName: string;
@@ -54,7 +83,7 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
   maxResults: number;
   listKey: string;
-  lists: Record<string, InitialisedList>;
+  lists: Record<string, InitialisedListOrSingleton>;
   dbMap: string | undefined;
   graphql: {
     isEnabled: {
@@ -87,22 +116,28 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const omit = listConfig.graphql?.omit;
-    const { defaultIsFilterable, defaultIsOrderable } = listConfig;
     if (!omit) {
       // We explicity check for boolean/function values here to ensure the dev hasn't made a mistake
       // when defining these values. We avoid duck-typing here as this is security related
       // and we want to make it hard to write incorrect code.
-      if (!['boolean', 'undefined', 'function'].includes(typeof defaultIsFilterable)) {
+      if (
+        listConfig.kind === 'list' &&
+        !['boolean', 'undefined', 'function'].includes(typeof listConfig.defaultIsFilterable)
+      ) {
         throw new Error(
-          `Configuration option '${listKey}.defaultIsFilterable' must be either a boolean value or a function. Recieved '${typeof defaultIsFilterable}'.`
+          `Configuration option '${listKey}.defaultIsFilterable' must be either a boolean value or a function. Recieved '${typeof listConfig.defaultIsFilterable}'.`
         );
       }
-      if (!['boolean', 'undefined', 'function'].includes(typeof defaultIsOrderable)) {
+      if (
+        listConfig.kind === 'list' &&
+        !['boolean', 'undefined', 'function'].includes(typeof listConfig.defaultIsOrderable)
+      ) {
         throw new Error(
-          `Configuration option '${listKey}.defaultIsOrderable' must be either a boolean value or a function. Recieved '${typeof defaultIsOrderable}'.`
+          `Configuration option '${listKey}.defaultIsOrderable' must be either a boolean value or a function. Recieved '${typeof listConfig.defaultIsOrderable}'.`
         );
       }
     }
+
     if (omit === true) {
       isEnabled[listKey] = {
         type: false,
@@ -119,9 +154,9 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
         query: true,
         create: true,
         update: true,
-        delete: true,
-        filter: defaultIsFilterable ?? true,
-        orderBy: defaultIsOrderable ?? true,
+        delete: listConfig.kind !== 'singleton',
+        filter: (listConfig.kind !== 'singleton' && listConfig.defaultIsFilterable) ?? true,
+        orderBy: (listConfig.kind !== 'singleton' && listConfig.defaultIsOrderable) ?? true,
       };
     } else {
       isEnabled[listKey] = {
@@ -130,8 +165,8 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
         create: !omit.includes('create'),
         update: !omit.includes('update'),
         delete: !omit.includes('delete'),
-        filter: defaultIsFilterable ?? true,
-        orderBy: defaultIsOrderable ?? true,
+        filter: (listConfig.kind !== 'singleton' && listConfig.defaultIsFilterable) ?? true,
+        orderBy: (listConfig.kind !== 'singleton' && listConfig.defaultIsOrderable) ?? true,
       };
     }
   }
@@ -459,7 +494,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     assertFieldsValid({ listKey, fields });
   }
 
-  const lists: Record<string, InitialisedList> = {};
+  const lists: Record<string, InitialisedListOrSingleton> = {};
 
   for (const [listKey, list] of Object.entries(listsWithInitialisedFieldsAndResolvedDbFields)) {
     lists[listKey] = {
