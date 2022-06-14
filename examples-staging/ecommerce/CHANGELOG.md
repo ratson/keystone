@@ -1,5 +1,14 @@
 # @keystone-6/example-ecommerce
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`52e547748`](https://github.com/keystonejs/keystone/commit/52e547748fcb9a7600a5500d8aabc27693542181), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8)]:
+  - @keystone-6/core@2.1.0
+  - @keystone-6/cloudinary@4.0.0
+  - @keystone-6/auth@4.0.0
+
 ## 0.0.4
 
 ### Patch Changes

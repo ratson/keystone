@@ -1,5 +1,19 @@
 # @keystone-6/cloudinary
 
+## 4.0.0
+
+### Minor Changes
+
+- [#7578](https://github.com/keystonejs/keystone/pull/7578) [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8) Thanks [@Achisingh](https://github.com/Achisingh)! - Added `ui.description` option to fields to show a description below the label in the Admin UI
+
+### Patch Changes
+
+- [#7607](https://github.com/keystonejs/keystone/pull/7607) [`52e547748`](https://github.com/keystonejs/keystone/commit/52e547748fcb9a7600a5500d8aabc27693542181) Thanks [@mmachatschek](https://github.com/mmachatschek)! - Added an export for the Cloudinary image GraphQL output type for developer usage e.g. in virtual fields.
+
+- Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8)]:
+  - @keystone-6/core@2.1.0
+  - @keystone-ui/fields@7.1.0
+
 ## 3.0.0
 
 ### Major Changes

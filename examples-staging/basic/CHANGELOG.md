@@ -1,5 +1,15 @@
 # @keystone-6/example-app-basic
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`d591e31c6`](https://github.com/keystonejs/keystone/commit/d591e31c61297c88ca5b0c24d4b855c3b12324b2), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`4ad95f0ef`](https://github.com/keystonejs/keystone/commit/4ad95f0ef8a6223808f47cd9ef2b50c46fd29c5b)]:
+  - @keystone-6/core@2.1.0
+  - @keystone-ui/fields@7.1.0
+  - @keystone-6/fields-document@4.0.0
+  - @keystone-6/auth@4.0.0
+
 ## 0.0.4
 
 ### Patch Changes
